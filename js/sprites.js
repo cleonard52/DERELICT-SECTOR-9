@@ -242,3 +242,60 @@ class PixelArtBank {
 }
 
 const ART = new PixelArtBank();
+function drawTile(ctx, tile, x, y, size, biome, act) {
+  const tileMap = { "#": 1, "=": 2, "^": 3, "A": 3, "L": 3, "B": 4, "G": 5, "M": 6, "R": 3, "F": 1 };
+  const tNum = typeof tile === "number" ? tile : (tileMap[tile] || 1);
+  if (typeof ART.drawTile === "function") {
+    ART.drawTile(ctx, tNum, x, y, size, biome, act);
+  } else {
+    ctx.fillStyle = "#1e3a52";
+    ctx.fillRect(x, y, size, size);
+  }
+}
+
+function drawSavePod(ctx, x, y, t) {
+  if (typeof ART.drawSavePod === "function") return ART.drawSavePod(ctx, x, y, t);
+  ctx.fillStyle = "#ffe64d";
+  ctx.fillRect(x - 14, y - 38, 28, 38);
+}
+
+function drawTerminal(ctx, x, y, read) {
+  if (typeof ART.drawTerminal === "function") return ART.drawTerminal(ctx, x, y, read);
+  ctx.fillStyle = read ? "#465a6b" : "#38f2ff";
+  ctx.fillRect(x - 10, y - 28, 20, 28);
+}
+
+function drawBreaker(ctx, x, y, fixed) {
+  if (typeof ART.drawBreaker === "function") return ART.drawBreaker(ctx, x, y, fixed);
+  ctx.fillStyle = fixed ? "#4dff7c" : "#ff2a4b";
+  ctx.fillRect(x - 12, y - 30, 24, 30);
+}
+
+function drawPickup(ctx, x, y, type, t) {
+  if (typeof ART.drawPickup === "function") return ART.drawPickup(ctx, x, y, type, t);
+  const bob = Math.sin(t * 4) * 3;
+  ctx.fillStyle = "#4dff7c";
+  ctx.fillRect(x - 9, y - 9 + bob, 18, 18);
+}
+
+function drawEnemy(ctx, en, t) {
+  if (typeof en.draw === "function") return en.draw(ctx, t);
+  if (typeof ART.drawEnemy === "function") return ART.drawEnemy(ctx, en, t);
+  ctx.fillStyle = en.frozen > 0 ? "#38f2ff" : "#ff2a4b";
+  ctx.fillRect(en.x, en.y, en.w, en.h);
+}
+
+function drawBoss(ctx, boss, t) {
+  if (typeof boss.draw === "function") return boss.draw(ctx, t);
+  if (typeof ART.drawBoss === "function") return ART.drawBoss(ctx, boss, t);
+  ctx.fillStyle = "#ff2a4b";
+  ctx.fillRect(boss.x, boss.y, boss.w, boss.h);
+}
+
+function drawPlayer(ctx, p) {
+  if (typeof ART.drawPlayer === "function") return ART.drawPlayer(ctx, p);
+  ctx.fillStyle = "#38f2ff";
+  ctx.fillRect(p.x, p.y, p.w, p.h);
+  ctx.fillStyle = "#ffb833";
+  ctx.fillRect(p.dir === 1 ? p.x + 12 : p.x + 2, p.y + 6, 8, 6);
+}
