@@ -427,8 +427,9 @@ Object.entries(ROOM_COORDS).forEach(([coord, id]) => {
 
 function getMutatedRoom(rx, ry, act, breakerFixed) {
   WORLD.advanceInfectionAct(act);
-  const key = `${rx},${ry}`;
-  const room = SHIP_WORLD[key] || Object.values(WORLD.rooms);
+  const allRooms = Object.values(WORLD.rooms);
+const idx = Math.abs(rx * 3 + ry * 7) % allRooms.length;
+const room = SHIP_WORLD[key] || allRooms[idx];
   if (!room) return null;
   room.tiles = room.grid;
   room.dark = !!(room.act3Dark || (BIOMES[room.biome] && BIOMES[room.biome].darkDefault));
