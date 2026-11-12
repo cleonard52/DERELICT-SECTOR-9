@@ -411,3 +411,7 @@ class WorldManager {
     return true;
   }
 }
+const WORLD = new WorldManager();
+function getMutatedRoom(roomId) {
+  return WORLD.rooms[roomId];
+}
