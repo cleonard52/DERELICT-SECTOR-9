@@ -474,3 +474,44 @@ class Boss {
     ctx.restore();
   }
 }
+function createEnemy(type, x, y, act) {
+  const en = new Enemy({ type, x, y });
+  if (act >= 2) en.hp = Math.round(en.hp * 1.25);
+  if (act >= 3) en.hp = Math.round(en.hp * 1.5);
+  return en;
+}
+
+function createBoss(bossId) {
+  const idMap = {
+    ROOT_MAW: "root_maw",
+    CAUTERIZER: "cauterizer",
+    LEVIATHAN: "leviathan",
+    STALKER: "stalker",
+    AMALGAM: "amalgam"
+  };
+  const mappedId = idMap[bossId] || bossId.toLowerCase();
+  const boss = new Boss(mappedId, 680, 310);
+  boss.id = bossId;
+  return boss;
+}
+
+function updateEnemy(en, player, room, dt, spawnProj) {
+  if (en.frozen > 0) {
+    en.frozen -= dt;
+    en.frozenTimer = Math.ceil(en.frozen * 60);
+    return;
+  }
+  if (typeof en.update === "function") {
+    en.update(player, room, (p) => spawnProj({ ...p, fromPlayer: false, life: 2.0 }));
+  }
+}
+
+function updateBoss(boss, player, dt, spawnProj) {
+  if (boss.slowTimer > 0) {
+    boss.slowTimer -= dt;
+    boss.frozenTimer = Math.ceil(boss.slowTimer * 60);
+  }
+  if (typeof boss.update === "function") {
+    boss.update(player, null, (p) => spawnProj({ ...p, fromPlayer: false, life: 2.5 }));
+  }
+}
