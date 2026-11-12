@@ -422,6 +422,9 @@ Object.values(WORLD.rooms).forEach((room) => {
   room.tiles = room.grid;
   room.save = room.savePod || null;
   room.pickups = room.items || [];
+  room.terminals = Array.isArray(room.terminals) ? room.terminals : [];
+room.breakers = Array.isArray(room.breakers) ? room.breakers : [];
+room.pickups = Array.isArray(room.items) ? room.items : [];
   room.doors = {
     left: !!(room.exits && room.exits.left),
     right: !!(room.exits && room.exits.right),
