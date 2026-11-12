@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DERELICT: SECTOR 9 — Sci-Fi Horror Metroidvania</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="crt-frame">
+    <div id="scanlines"></div>
+    <div id="vignette"></div>
+    <div id="alarm-overlay"></div>
+
+    <!-- TOP RETRO HUD -->
+    <header id="hud">
+      <div class="hud-group">
+        <div class="hud-label">SUIT INTEGRITY</div>
+        <div class="bar-outer hp-bar">
+          <div id="hp-fill" class="bar-inner"></div>
+          <span id="hp-text">100 / 100</span>
+        </div>
+      </div>
+
+      <div class="hud-group">
+        <div class="hud-label">VISOR BATTERY</div>
+        <div class="bar-outer bat-bar">
+          <div id="bat-fill" class="bar-inner"></div>
+          <span id="bat-text">100%</span>
+        </div>
+      </div>
+
+      <div class="hud-group center-hud">
+        <div id="sector-name">CRYO-DECK // DECK A</div>
+        <div id="act-indicator">ACT I: CONTAINMENT BREACH</div>
+      </div>
+
+      <div class="hud-group">
+        <div class="hud-label">WEAPON SYSTEM</div>
+        <div id="weapon-display">PLASMA CUTTER [LV.1]</div>
+      </div>
+
+      <div class="hud-group radar-group">
+        <div class="hud-label">MOTION TRACKER</div>
+        <div id="radar-box">
+          <div id="radar-sweep"></div>
+          <div id="radar-dot"></div>
+          <span id="radar-dist">CLEAR</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- MAIN GAME CANVAS -->
+    <main id="viewport">
+      <canvas id="gameCanvas" width="960" height="540"></canvas>
+
+      <!-- BOSS HEALTH BAR -->
+      <div id="boss-hud" class="hidden">
+        <div id="boss-name">THE ROOT-MAW</div>
+        <div class="bar-outer boss-bar">
+          <div id="boss-hp-fill" class="bar-inner"></div>
+        </div>
+      </div>
+
+      <!-- SELF DESTRUCT TIMER -->
+      <div id="escape-hud" class="hidden">
+        <div class="escape-warn">CORE DETONATION IMMINENT — REACH ESCAPE SHUTTLE</div>
+        <div id="escape-timer">02:00.00</div>
+      </div>
+
+      <!-- FLOATING PROMPT -->
+      <div id="prompt-banner" class="hidden">[E] ACCESS TERMINAL</div>
+    </main>
+
+    <!-- BOTTOM UPGRADE BAR -->
+    <footer id="gear-bar">
+      <span id="gear-dash" class="gear-chip locked">PHASE DASH</span>
+      <span id="gear-cryo" class="gear-chip locked">CRYO-BLASTER</span>
+      <span id="gear-thrust" class="gear-chip locked">THRUSTER PACK</span>
+      <span id="gear-mag" class="gear-chip locked">MAG-BOOTS</span>
+      <span id="gear-key" class="gear-chip">CLEARANCE: LV.0</span>
+      <span id="completion-stat">ITEMS: 0% | MAP: 1%</span>
+    </footer>
+
+    <!-- TITLE SCREEN OVERLAY -->
+    <section id="title-screen" class="modal-overlay">
+      <div class="terminal-box title-box">
+        <div class="ship-header">USCSS ACHERON // HULL BREACH DETECTED</div>
+        <h1 class="glitch-title">DERELICT: SECTOR 9</h1>
+        <p class="subtitle">14 YEARS OFF COURSE. SOMETHING FROM OUTSIDE IS IN THE WALLS.</p>
+        <div class="menu-buttons">
+          <button id="btn-new-game" class="retro-btn primary">INITIATE NEW EXPEDITION</button>
+          <button id="btn-continue" class="retro-btn" disabled>RESUME SAVED SIGNAL</button>
+          <button id="btn-import-title" class="retro-btn">IMPORT SAVE (.JSON)</button>
+        </div>
+        <div class="controls-grid">
+          <div><b>A/D / ARROWS:</b> Move</div>
+          <div><b>SPACE / W:</b> Jump / Hover</div>
+          <div><b>J / Z:</b> Fire Weapon</div>
+          <div><b>K / X:</b> Toggle Cryo/Plasma</div>
+          <div><b>SHIFT / L:</b> Phase Dash</div>
+          <div><b>F:</b> Visor Flashlight</div>
+          <div><b>E:</b> Terminal / Save</div>
+          <div><b>M / TAB:</b> Ship Map</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DATA LOG / UPGRADE MODAL -->
+    <section id="log-modal" class="modal-overlay hidden">
+      <div class="terminal-box log-box">
+        <div id="log-header" class="terminal-header">CREW BLACK-BOX LOG // #01</div>
+        <div id="log-meta" class="terminal-meta">TIMESTAMP: UNKNOWN</div>
+        <div id="log-body" class="terminal-body"></div>
+        <button id="btn-close-log" class="retro-btn primary">[E / ESC] CLOSE TRANSMISSION</button>
+      </div>
+    </section>
+
+    <!-- FULL SHIP AUTO-MAP MODAL -->
+    <section id="map-modal" class="modal-overlay hidden">
+      <div class="terminal-box map-box">
+        <div class="terminal-header">USCSS ACHERON — TACTICAL DECK SCHEMATIC</div>
+        <div class="map-legend">
+          <span class="leg cryo">■ CRYO-DECK</span>
+          <span class="leg hydro">■ HYDROPONICS</span>
+          <span class="leg reactor">■ REACTOR</span>
+          <span class="leg hull">■ EXTERIOR HULL</span>
+          <span class="leg biolab">■ BIO-LABS</span>
+          <span class="leg save">✚ SAVE POD</span>
+        </div>
+        <canvas id="mapCanvas" width="760" height="380"></canvas>
+        <div id="map-stats" class="terminal-meta">PLAYTIME: 00:00:00 | ITEMS: 0/22 | LOGS: 0/20</div>
+        <button id="btn-close-map" class="retro-btn">[M / ESC] RETURN TO VISOR</button>
+      </div>
+    </section>
+
+    <!-- PAUSE / SAVE EXPORT MODAL -->
+    <section id="pause-modal" class="modal-overlay hidden">
+      <div class="terminal-box">
+        <div class="terminal-header">SUIT DIAGNOSTICS // PAUSED</div>
+        <div id="pause-summary" class="terminal-body"></div>
+        <div class="menu-buttons">
+          <button id="btn-resume" class="retro-btn primary">RESUME</button>
+          <button id="btn-export-save" class="retro-btn">EXPORT SAVE FILE (.JSON)</button>
+          <button id="btn-quit-title" class="retro-btn danger">ABORT TO TITLE</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ENDING / GAME OVER MODAL -->
+    <section id="end-modal" class="modal-overlay hidden">
+      <div class="terminal-box">
+        <div id="end-title" class="glitch-title">SIGNAL LOST</div>
+        <div id="end-body" class="terminal-body"></div>
+        <div class="menu-buttons">
+          <button id="btn-reload-save" class="retro-btn primary">LOAD LAST SAVE POD</button>
+          <button id="btn-end-title" class="retro-btn">RETURN TO TITLE</button>
+        </div>
+      </div>
+    </section>
+
+    <input type="file" id="import-file-input" accept=".json" class="hidden" />
+  </div>
+
+  <!-- MODULAR SCRIPTS -->
+  <script src="data/logs.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/sprites.js"></script>
+  <script src="js/world.js"></script>
+  <script src="js/entities.js"></script>
+  <script src="js/engine.js"></script>
+</body>
+</html>
