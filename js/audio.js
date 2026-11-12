@@ -110,11 +110,12 @@ class HorrorAudio {
     setTimeout(() => this.playTone(660, 880, 0.22, "triangle", 0.12), 110);
   }
 
-  playSave() {
-   .forEach((f, i) => {
-      setTimeout(() => this.playTone(f, f, 0.16, "triangle", 0.1), i * 85);
-    });
-  }
+ playSave() {
+  [523, 659, 784, 1046].forEach((f, i) => {
+    setTimeout(() => this.playTone(f, f, 0.16, "triangle", 0.1), i * 85);
+  });
+}
+
 
   playRadarPing(dangerRatio) {
     const pitch = 950 + dangerRatio * 450;
