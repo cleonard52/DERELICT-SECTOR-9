@@ -412,26 +412,22 @@ class WorldManager {
   }
 }
 const WORLD = new WorldManager();
-const ROOM_COORDS = {
-  "0,0": "cryo_01", "1,0": "cryo_02", "2,0": "cryo_03", "2,1": "cryo_04",
-  "3,1": "hydro_01", "4,1": "hydro_02", "4,2": "hydro_03", "5,2": "hydro_04",
-  "2,2": "reactor_01", "2,3": "reactor_02", "3,3": "reactor_03", "1,3": "reactor_04",
-  "1,-1": "hull_01", "2,-1": "hull_02", "3,-1": "hull_03",
-  "2,4": "biolab_01", "3,4": "biolab_02", "3,5": "biolab_03", "4,5": "biolab_04"
-};
-
 const SHIP_WORLD = {};
-Object.entries(ROOM_COORDS).forEach(([coord, id]) => {
-  if (WORLD.rooms[id]) SHIP_WORLD[coord] = WORLD.rooms[id];
-});
 
-function getMutatedRoom(rx, ry, act, breakerFixed) {
-  WORLD.advanceInfectionAct(act);
-  const allRooms = Object.values(WORLD.rooms);
-const idx = Math.abs(rx * 3 + ry * 7) % allRooms.length;
-const room = SHIP_WORLD[key] || allRooms[idx];
-  if (!room) return null;
+Object.values(WORLD.rooms).forEach((room) => {
+  const rx = room.gx - 4;
+  const ry = room.gy;
+  const key = `${rx},${ry}`;
+  room.name = room.title || room.id.toUpperCase();
   room.tiles = room.grid;
+  room.save = room.savePod || null;
+  room.pickups = room.items || [];
+  room.doors = {
+    left: !!(room.exits && room.exits.left),
+    right: !!(room.exits && room.exits.right),
+    up: !!(room.exits && room.exits.up),
+    down: !!(room.exits && room.exits.down)
+  };
   room.dark = !!(room.act3Dark || (BIOMES[room.biome] && BIOMES[room.biome].darkDefault));
   room.collidesRect = function(x, y, w, h) {
     const T = 32;
@@ -446,7 +442,15 @@ const room = SHIP_WORLD[key] || allRooms[idx];
     }
     return false;
   };
+  SHIP_WORLD[key] = room;
+});
+
+function getMutatedRoom(rx, ry, act, breakerFixed) {
+  WORLD.advanceInfectionAct(act);
+  const key = `${rx},${ry}`;
+  const room = SHIP_WORLD[key] || SHIP_WORLD["0,0"];
+  if (!room) return null;
+  room.tiles = room.grid;
+  room.dark = !!(room.act3Dark || (BIOMES[room.biome] && BIOMES[room.biome].darkDefault));
   return room;
 }
-
-
