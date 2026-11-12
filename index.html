@@ -162,6 +162,14 @@
 
     <input type="file" id="import-file-input" accept=".json" class="hidden" />
   </div>
+<div id="debug-box" style="position:fixed;bottom:10px;left:10px;right:10px;background:#300;color:#ff8080;border:2px solid #f00;padding:10px;font-size:13px;z-index:9999;display:none;"></div>
+<script>
+  window.onerror = function(msg, src, line) {
+    const box = document.getElementById("debug-box");
+    box.style.display = "block";
+    box.innerText += "ERROR: " + msg + " (" + (src || "").split("/").pop() + ":" + line + ")\n";
+  };
+</script>
 
   <!-- MODULAR SCRIPTS -->
   <script src="data/logs.js"></script>
